@@ -1,0 +1,24 @@
+plugins {
+    id 'java'
+    id 'application'
+}
+group 'com.example.websocket'
+version '1.0-SNAPSHOT'
+repositories {
+    mavenCentral()
+}
+dependencies {
+    implementation 'com.sparkjava:spark-core:2.9.4'
+    implementation 'com.google.code.gson:gson:2.10.1'
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+    implementation 'org.glassfish.tyrus:tyrus-server:1.17'    // Jackson for JSON
+    implementation 'com.fasterxml.jackson.core:jackson-databind:2.15.2'    // Logging (optional)
+    implementation 'org.slf4j:slf4j-simple:2.0.9'
+}
+
+application {
+    mainClass = 'org.example.Main'
+}
+test {
+    useJUnitPlatform()
+}
