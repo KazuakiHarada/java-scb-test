@@ -46,12 +46,12 @@ public class WebSocketHandler implements WebSocketListener {
 
     @Override
     public void onWebSocketText(String s) {
-
+        System.out.println("Received message: " + s);
     }
 
     @Override
     public void onWebSocketClose(int i, String s) {
-
+        System.out.println("Client disconnected");
     }
 
     @Override

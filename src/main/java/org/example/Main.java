@@ -18,7 +18,7 @@ public class Main {
             return Main.class.getResourceAsStream("/public/index.html");
         }));
 
-        System.out.println("Server is running on https://localhost:8083");
+        System.out.println("Server is running on http://localhost:8083");
 
         // JVMシャットダウンフックでスケジューラを停止
         Runtime.getRuntime().addShutdownHook(new Thread(WebSocketHandler::stopScheduler));
