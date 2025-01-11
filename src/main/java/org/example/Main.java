@@ -19,8 +19,7 @@ public class Main {
         }));
 
         System.out.println("Server is running on http://localhost:8083");
-
         // JVMシャットダウンフックでスケジューラを停止
-        Runtime.getRuntime().addShutdownHook(new Thread(WebSocketHandler::stopScheduler));
+        //Runtime.getRuntime().addShutdownHook(new Thread(WebSocketHandler::stopScheduler));
     }
 }
