@@ -47,6 +47,9 @@ public class WebSocketHandler implements WebSocketListener {
     public void onWebSocketConnect(Session session) {
         gameDataManager.addSession(session);
         System.out.println("Client connected: " + session.getRemoteAddress());
+        // for test
+        SetScore setScore = new SetScore();
+        setScore.start();
     }
 
     @Override
