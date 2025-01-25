@@ -2,56 +2,47 @@ package org.example;
 
 import com.google.gson.Gson;
 import com.google.gson.JsonSyntaxException;
-import org.eclipse.jetty.websocket.api.Session;
-import org.eclipse.jetty.websocket.api.WebSocketListener;
+import io.javalin.websocket.WsContext;
+import io.javalin.websocket.WsMessageContext;
 
+import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 
-public class WebSocketHandler implements WebSocketListener {
+public class WebSocketHandler {
 
-    private final GameDataManager gameDataManager = GameDataManager.getInstance();
-    Gson gson = new Gson();
+    private static final GameDataManager gameDataManager = GameDataManager.getInstance();
+    private static final Gson gson = new Gson();
+    private static final Set<WsContext> connectedClients = ConcurrentHashMap.newKeySet();
 
-
-    @Override
-    public void onWebSocketBinary(byte[] bytes, int i, int i1) {
-
+    public static void onConnect(WsContext ctx) {
+        connectedClients.add(ctx);
+        gameDataManager.addSession(ctx.session);
+        System.out.println("Client connected: " + ctx.session.getRemoteAddress());
     }
 
-    @Override
-    public void onWebSocketText(String s) {
-
+    public static void onMessage(WsMessageContext ctx) {
+        String message = ctx.message();
         try {
-            GameConfigJson message = gson.fromJson(s, GameConfigJson.class);
+            GameConfigJson gameConfig = gson.fromJson(message, GameConfigJson.class);
+            String payload = gameConfig.getPayload();
 
-            if ("reset".equals(message.getPayload())) {
+            if ("reset".equals(payload)) {
                 gameDataManager.resetGame();
                 System.out.println("Game reset successfully");
-            } else if ("start".equals(message.getPayload())) {
+            } else if ("start".equals(payload)) {
                 gameDataManager.restartGame();
                 System.out.println("Game restarted successfully");
             } else {
-                System.out.println("Unknown message: " + s);
+                System.out.println("Unknown message: " + message);
             }
         } catch (JsonSyntaxException e) {
-            System.out.println("Unknown message: " + s);
-            throw new RuntimeException(e);
+            System.out.println("Invalid message format: " + message);
+            ctx.send("Invalid message format");
         }
     }
 
-    @Override
-    public void onWebSocketClose(int i, String s) {
-        System.out.println("Client disconnected");
+    public static void onClose(WsContext ctx) {
+        connectedClients.remove(ctx);
+        System.out.println("Client disconnected: " + ctx.session.getRemoteAddress());
     }
-
-    @Override
-    public void onWebSocketConnect(Session session) {
-        gameDataManager.addSession(session);
-        System.out.println("Client connected: " + session.getRemoteAddress());
-    }
-
-    @Override
-    public void onWebSocketError(Throwable throwable) {
-        System.out.println(throwable.toString());
-    }
-
 }

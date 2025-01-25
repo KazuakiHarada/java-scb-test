@@ -1,28 +1,34 @@
 package org.example;
 
-import spark.Spark;
+import io.javalin.Javalin;
+import io.javalin.websocket.WsConfig;
 
 import java.io.InputStream;
 
 public class Main {
     public static void main(String[] args) {
-        Spark.port(8083);
-        Spark.staticFiles.location("/public");
-        Spark.webSocket("/ws", WebSocketHandler.class);
-        Spark.init();
+        Javalin app = Javalin.create(config -> {
+            config.staticFiles.add("/public");
+        }).start(8083);
 
-        Spark.before("/ws", (request, response) -> {
+        app.ws("/ws", ws -> {
+            ws.onConnect(WebSocketHandler::onConnect);
+            ws.onMessage(WebSocketHandler::onMessage);
+            ws.onClose(WebSocketHandler::onClose);
+            ws.onError(ctx -> System.out.println("Errored"));
+        });
+
+        app.before("/ws", ctx -> {
             System.out.println("connection established");
         });
 
-        Spark.get("/view", (request, response) -> {
-            response.type("text/html");
-            try (InputStream resourceStream = Main.class.getResourceAsStream("public/index.html")) {
+        app.get("/view", ctx -> {
+            try (InputStream resourceStream = Main.class.getResourceAsStream("/public/index.html")) {
                 if (resourceStream == null) {
-                    response.status(404);
-                    return "404 Not Found";
+                    ctx.status(404).result("404 Not Found");
+                } else {
+                    ctx.contentType("text/html").result(new String(resourceStream.readAllBytes()));
                 }
-                return new String(resourceStream.readAllBytes());
             }
         });
 
