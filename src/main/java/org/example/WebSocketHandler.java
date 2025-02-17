@@ -45,6 +45,8 @@ public class WebSocketHandler {
                     case null, default -> System.out.println("(AdjustScore) unknown payload");
                 }
                 System.out.println("current-score : "+gameDataManager.ScoreA() + " - " + gameDataManager.ScoreB());
+            } else if ("heartbeat".equals(gameConfig.getType())) {
+                System.out.println("heartbeat from: " +ctx.session.getRemoteAddress());
             } else {
                 System.out.println("unknown Message" + message );
             }
