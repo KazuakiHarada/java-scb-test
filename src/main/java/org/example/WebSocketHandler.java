@@ -26,29 +26,30 @@ public class WebSocketHandler {
             GameConfigJson gameConfig = gson.fromJson(message, GameConfigJson.class);
             String payload = gameConfig.getPayload();
 
-            if ("GameConfig".equals(gameConfig.getType())){
-                if ("reset".equals(payload)) {
-                    gameDataManager.resetGame();
-                    System.out.println("Game reset successfully");
-                } else if ("start".equals(payload)) {
-                    gameDataManager.restartGame();
-                    System.out.println("Game restarted successfully");
-                } else {
-                    System.out.println("Unknown payload: " + message);
+            switch (gameConfig.getType()) {
+                case "GameConfig" -> {
+                    if ("reset".equals(payload)) {
+                        gameDataManager.resetGame();
+                        System.out.println("Game reset successfully");
+                    } else if ("start".equals(payload)) {
+                        gameDataManager.restartGame();
+                        System.out.println("Game restarted successfully");
+                    } else {
+                        System.out.println("Unknown payload: " + message);
+                    }
                 }
-            } else if ("adjust-score".equals(gameConfig.getType())) {
-                switch (payload) {
-                    case "A+" -> gameDataManager.UpdateScore(true, gameDataManager.ScoreA() + 1);
-                    case "A-" -> gameDataManager.UpdateScore(true, gameDataManager.ScoreA() - 1);
-                    case "B+" -> gameDataManager.UpdateScore(false, gameDataManager.ScoreB() + 1);
-                    case "B-" -> gameDataManager.UpdateScore(false, gameDataManager.ScoreB() - 1);
-                    case null, default -> System.out.println("(AdjustScore) unknown payload");
+                case "adjust-score" -> {
+                    switch (payload) {
+                        case "A+" -> gameDataManager.UpdateScore(true, gameDataManager.ScoreA() + 1);
+                        case "A-" -> gameDataManager.UpdateScore(true, gameDataManager.ScoreA() - 1);
+                        case "B+" -> gameDataManager.UpdateScore(false, gameDataManager.ScoreB() + 1);
+                        case "B-" -> gameDataManager.UpdateScore(false, gameDataManager.ScoreB() - 1);
+                        case null, default -> System.out.println("(AdjustScore) unknown payload");
+                    }
+                    System.out.println("current-score : " + gameDataManager.ScoreA() + " - " + gameDataManager.ScoreB());
                 }
-                System.out.println("current-score : "+gameDataManager.ScoreA() + " - " + gameDataManager.ScoreB());
-            } else if ("heartbeat".equals(gameConfig.getType())) {
-                System.out.println("heartbeat from: " +ctx.session.getRemoteAddress());
-            } else {
-                System.out.println("unknown Message" + message );
+                case "heartbeat" -> System.out.println("heartbeat from: " + ctx.session.getRemoteAddress());
+                case null, default -> System.out.println("unknown Message" + message);
             }
 
         } catch (JsonSyntaxException e) {
