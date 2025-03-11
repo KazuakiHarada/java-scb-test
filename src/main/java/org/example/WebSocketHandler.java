@@ -48,6 +48,7 @@ public class WebSocketHandler {
                     }
                     System.out.println("current-score : " + gameDataManager.ScoreA() + " - " + gameDataManager.ScoreB());
                 }
+                case "adjust-time" ->gameDataManager.UpdateGameDuration(Integer.parseInt(payload));
                 case "heartbeat" -> System.out.println("heartbeat from: " + ctx.session.getRemoteAddress());
                 case null, default -> System.out.println("unknown Message" + message);
             }

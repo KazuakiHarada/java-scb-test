@@ -90,6 +90,12 @@ public class GameDataManager {
         broadcastGameData();
     }
 
+    public synchronized void UpdateGameDuration(int gameDuration) {
+        this.gameDuration = gameDuration;
+        // データ更新時に全セッションにメッセージ送信
+        broadcastGameData();
+    }
+
     private synchronized void broadcastGameData() {
         String jsonMessage = gson.toJson(this);
         for (Session session : sessions) {
