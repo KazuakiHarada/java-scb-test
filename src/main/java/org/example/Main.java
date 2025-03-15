@@ -35,6 +35,7 @@ public class Main {
         QRHandler qrHandler = new QRHandler();
         app.get("/qrcode", qrHandler::handleQrCode);
         app.get("/qr", qrHandler::handleQrPage);
+        app.get("/url", qrHandler::handleQRUrl);
 
         System.out.println("Server is running on http://localhost:8083");
     }

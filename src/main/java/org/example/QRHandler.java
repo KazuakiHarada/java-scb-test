@@ -12,6 +12,8 @@ import com.google.zxing.common.BitMatrix;
 
 import javax.imageio.ImageIO;
 import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
 import java.net.Inet4Address;
 import java.net.InetAddress;
 import java.net.NetworkInterface;
@@ -43,12 +45,22 @@ public class QRHandler {
         }
     }
 
+    void handleQRUrl(Context ctx){
+        String ipAddress = getLocalIpAddress();
+        String url = "http://" + ipAddress + ":" + port + "/view";
+        ctx.result(url);
+    }
+
     void handleQrPage(Context context){
-        try {
-            context.html("<html><body><img src='/qrcode' alt='QR Code'></body></html>");
-        } catch (Exception e) {
-            logger.warning("Failed to generate QR code");
-            context.status(500).result("Error generating QR code");
+        try (InputStream resourceStream = getClass().getResourceAsStream("/public/qrPage.html")) {
+            if (resourceStream == null) {
+                context.status(404).result("404 Not Found");
+            } else {
+                context.contentType("text/html").result(new String(resourceStream.readAllBytes()));
+            }
+        } catch (IOException e) {
+            logger.warning("Failed to read qrpage.html");
+            context.status(500).result("Error reading qrpage.html");
         }
     }
 
