@@ -32,6 +32,10 @@ public class Main {
             }
         });
 
+        QRHandler qrHandler = new QRHandler();
+        app.get("/qrcode", qrHandler::handleQrCode);
+        app.get("/qr", qrHandler::handleQrPage);
+
         System.out.println("Server is running on http://localhost:8083");
     }
 }
