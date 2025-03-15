@@ -23,7 +23,7 @@ public class GameDataManager {
         this.scoreA = 0;
         this.scoreB = 0;
         this.gameID = "";
-        this.gameDuration = 60;
+        this.gameDuration = 120;
         this.infoCode = 0;
     }
 
@@ -49,7 +49,7 @@ public class GameDataManager {
         this.scoreA = 0;
         this.scoreB = 0;
         this.gameID = "";
-        this.gameDuration = 60;
+        this.gameDuration = 120;
         this.infoCode = 0;
 
         // データ更新時に全セッションにメッセージ送信
@@ -86,6 +86,12 @@ public class GameDataManager {
             this.scoreB = score;
         }
         this.infoCode = 0;
+        // データ更新時に全セッションにメッセージ送信
+        broadcastGameData();
+    }
+
+    public synchronized void UpdateGameDuration(int gameDuration) {
+        this.gameDuration = gameDuration;
         // データ更新時に全セッションにメッセージ送信
         broadcastGameData();
     }
