@@ -19,9 +19,17 @@
             color: #333;
         }
 
-        h1 {
+        .title-container {
             margin-bottom: 30px;
+        }
+
+        h1 {
             color: #2c3e50;
+        }
+
+        .subtitle {
+            margin-top: 10px;
+            color: #666;
         }
 
         .warning {
@@ -87,7 +95,10 @@
     </style>
 </head>
 <body>
-<h1>QRコード表示</h1>
+<div class="title-container">
+    <h1>QRコード表示</h1>
+    <p class="subtitle">スマートフォンからQRコードを読み取ってデモ得点板にアクセスします</p>
+</div>
 
 <div class="warning">
     QRコードを読み取る前に、スマートフォンがAi-server-Cafeを実行しているPCと同一LANに接続されていることを確認してください。
